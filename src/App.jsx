@@ -16,11 +16,18 @@ import {
   Chip,
   Button,
   ToggleButton,
-  ToggleButtonGroup
+  ToggleButtonGroup,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  InputAdornment
 } from '@mui/material';
 import { INDEX_FUNDS, FUND_CATEGORIES } from './data/indexFunds';
 import { CURRENCIES, convertCurrency } from './data/currencies';
 import { updateFundData, updateExchangeRates, shouldUpdate } from './services/marketData';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SearchIcon from '@mui/icons-material/Search';
 
 // Add new calculation parameters
 const MARKET_FACTORS = {
@@ -245,6 +252,7 @@ function App() {
     returns: null,
     exchangeRates: null
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     calculateResults();
@@ -379,7 +387,12 @@ function App() {
 
   // Filter funds based on selected criteria
   const getFilteredFunds = () => {
-    return Object.entries(INDEX_FUNDS).filter(([_, fund]) => {
+    return Object.entries(INDEX_FUNDS).filter(([symbol, fund]) => {
+      const matchesSearch = searchQuery === '' || 
+        fund.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        fund.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
       const matchesRisk = filters.riskLevel === 'all' || fund.riskLevel === filters.riskLevel;
       const matchesCategory = filters.category === 'all' || fund.category === filters.category;
       const matchesAssetType = filters.assetType === 'all' || fund.assetType === filters.assetType;
@@ -387,7 +400,7 @@ function App() {
         (filters.distributionType === 'accumulation' && fund.accumulationFund) ||
         (filters.distributionType === 'distribution' && fund.distributionFrequency);
       
-      return matchesRisk && matchesCategory && matchesAssetType && matchesDistribution;
+      return matchesSearch && matchesRisk && matchesCategory && matchesAssetType && matchesDistribution;
     });
   };
 
@@ -453,13 +466,12 @@ function App() {
         <Container maxWidth="xl">
           <Typography 
             variant="h4" 
-            align="center" 
             sx={{ 
-              mb: 4,
               fontWeight: 'bold',
               background: 'linear-gradient(45deg, #1a237e 30%, #0d47a1 90%)',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              WebkitTextFillColor: 'transparent',
+              mb: 4
             }}
           >
             Index Fund Investment Calculator
@@ -645,99 +657,140 @@ function App() {
                 )}
               </Box>
 
-              {selectedFund && (
-                <Box sx={{ 
+              <Typography variant="h5" gutterBottom>
+                Select Index Fund
+              </Typography>
+              
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Search funds by name, symbol, or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{ 
                   mb: 3,
-                  p: 2,
-                  bgcolor: 'rgba(33, 150, 243, 0.04)',
-                  borderRadius: 2,
-                  display: 'flex',
-                  flexDirection: { xs: 'column', md: 'row' },
-                  gap: 2
-                }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="h6" gutterBottom>
-                      {INDEX_FUNDS[selectedFund].name} ({selectedFund})
-                    </Typography>
-                    <Typography color="text.secondary" paragraph>
-                      {INDEX_FUNDS[selectedFund].description}
-                    </Typography>
-                    
-                    <Grid container spacing={2} sx={{ mb: 2 }}>
-                      <Grid item xs={12} sm={6}>
-                        <Chip 
-                          label={`Risk Level: ${INDEX_FUNDS[selectedFund].riskLevel}`}
-                          sx={{ 
-                            mr: 1, 
-                            mb: 1,
-                            borderColor: getRiskColor(INDEX_FUNDS[selectedFund].riskLevel),
-                            color: getRiskColor(INDEX_FUNDS[selectedFund].riskLevel)
-                          }}
-                          variant="outlined"
-                        />
-                        <Chip 
-                          label={`Category: ${INDEX_FUNDS[selectedFund].category}`}
-                          sx={{ mr: 1, mb: 1 }}
-                          color="secondary"
-                          variant="outlined"
-                        />
-                        <Chip 
-                          label={`Dividend Yield: ${(INDEX_FUNDS[selectedFund].dividendYield * 100).toFixed(2)}%`}
-                          sx={{ mr: 1, mb: 1 }}
-                          color="success"
-                          variant="outlined"
-                        />
-                        <Chip 
-                          label={`ISIN: ${INDEX_FUNDS[selectedFund].isin}`}
-                          sx={{ mr: 1, mb: 1 }}
-                          color="primary"
-                          variant="outlined"
-                        />
-                        <Chip 
-                          label={`Min Investment: ${formatCurrency(INDEX_FUNDS[selectedFund].minimumInvestment)}`}
-                          sx={{ mr: 1, mb: 1 }}
-                          color="info"
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Grid>
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-                      Last Updated: {lastUpdate.prices ? new Date(lastUpdate.prices).toLocaleString() : 'Not yet updated'}
-                    </Typography>
-                  </Box>
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'rgba(33, 150, 243, 0.04)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(33, 150, 243, 0.08)',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: 'rgba(33, 150, 243, 0.12)',
+                    }
+                  }
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
+              <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                {selectedFund && (
                   <Box sx={{ 
-                    flex: 1,
+                    mb: 3,
+                    p: 2,
+                    bgcolor: 'rgba(33, 150, 243, 0.04)',
+                    borderRadius: 2,
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: { xs: 'column', md: 'row' },
                     gap: 2
                   }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ color: 'primary.dark', fontWeight: 500 }}>
-                      Historical Returns
-                    </Typography>
-                    <Grid container spacing={2}>
-                      {Object.entries(INDEX_FUNDS[selectedFund].historicalReturns).map(([period, value]) => (
-                        <Grid item xs={6} sm={3} key={period}>
-                          <Box sx={{ 
-                            p: 2, 
-                            bgcolor: 'background.paper',
-                            borderRadius: 2,
-                            boxShadow: '0 2px 8px 0 rgba(0,0,0,0.05)',
-                            textAlign: 'center'
-                          }}>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                              {period.replace(/([A-Z])/g, ' $1').trim()}
-                            </Typography>
-                            <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                              {formatPercent(value)}
-                            </Typography>
-                          </Box>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="h6" gutterBottom>
+                        {INDEX_FUNDS[selectedFund].name} ({selectedFund})
+                      </Typography>
+                      <Typography color="text.secondary" paragraph>
+                        {INDEX_FUNDS[selectedFund].description}
+                      </Typography>
+                      
+                      <Grid container spacing={2} sx={{ mb: 2 }}>
+                        <Grid item xs={12} sm={6}>
+                          <Chip 
+                            label={`Risk Level: ${INDEX_FUNDS[selectedFund].riskLevel}`}
+                            sx={{ 
+                              mr: 1, 
+                              mb: 1,
+                              borderColor: getRiskColor(INDEX_FUNDS[selectedFund].riskLevel),
+                              color: getRiskColor(INDEX_FUNDS[selectedFund].riskLevel)
+                            }}
+                            variant="outlined"
+                          />
+                          <Chip 
+                            label={`Category: ${INDEX_FUNDS[selectedFund].category}`}
+                            sx={{ mr: 1, mb: 1 }}
+                            color="secondary"
+                            variant="outlined"
+                          />
+                          <Chip 
+                            label={INDEX_FUNDS[selectedFund].accumulationFund ? 'Accumulation Fund' : 
+                                  INDEX_FUNDS[selectedFund].distributionFrequency ? `Distribution (${INDEX_FUNDS[selectedFund].distributionFrequency})` : 
+                                  'Distribution Fund'}
+                            sx={{ mr: 1, mb: 1 }}
+                            color="info"
+                            variant="outlined"
+                          />
+                          <Chip 
+                            label={`Dividend Yield: ${(INDEX_FUNDS[selectedFund].dividendYield * 100).toFixed(2)}%`}
+                            sx={{ mr: 1, mb: 1 }}
+                            color="success"
+                            variant="outlined"
+                          />
+                          <Chip 
+                            label={`ISIN: ${INDEX_FUNDS[selectedFund].isin}`}
+                            sx={{ mr: 1, mb: 1 }}
+                            color="primary"
+                            variant="outlined"
+                          />
+                          <Chip 
+                            label={`Min Investment: ${formatCurrency(INDEX_FUNDS[selectedFund].minimumInvestment)}`}
+                            sx={{ mr: 1, mb: 1 }}
+                            color="info"
+                            variant="outlined"
+                          />
                         </Grid>
-                      ))}
-                    </Grid>
+                      </Grid>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+                        Last Updated: {lastUpdate.prices ? new Date(lastUpdate.prices).toLocaleString() : 'Not yet updated'}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ 
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 2
+                    }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ color: 'primary.dark', fontWeight: 500 }}>
+                        Historical Returns
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {Object.entries(INDEX_FUNDS[selectedFund].historicalReturns).map(([period, value]) => (
+                          <Grid item xs={6} sm={3} key={period}>
+                            <Box sx={{ 
+                              p: 2, 
+                              bgcolor: 'background.paper',
+                              borderRadius: 2,
+                              boxShadow: '0 2px 8px 0 rgba(0,0,0,0.05)',
+                              textAlign: 'center'
+                            }}>
+                              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                {period.replace(/([A-Z])/g, ' $1').trim()}
+                              </Typography>
+                              <Typography variant="h6" sx={{ color: 'primary.main' }}>
+                                {formatPercent(value)}
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
                   </Box>
-                </Box>
-              )}
+                )}
+              </Box>
             </CardContent>
           </Card>
 

@@ -29,7 +29,48 @@ export const INDEX_FUNDS = {
     ukAvailable: true,
     tradingCurrency: 'GBP',
     isin: 'IE00B3RBWM25',
-    assetType: 'Pure Equity'
+    assetType: 'Pure Equity',
+    distributionFrequency: 'Quarterly'
+  },
+  'VWRP': {
+    name: 'Vanguard FTSE All-World UCITS ETF (Accumulating)',
+    category: FUND_CATEGORIES.GLOBAL_EQUITY,
+    description: 'Provides broad exposure to developed and emerging market stocks worldwide. This accumulating version automatically reinvests dividends.',
+    expenseRatio: 0.0022, // 0.22%
+    historicalReturns: {
+      oneYear: 0.2197,
+      threeYear: 0.0789,
+      fiveYear: 0.0967,
+      tenYear: 0.0898,
+    },
+    minimumInvestment: 500,
+    riskLevel: 'Moderate',
+    dividendYield: 0.0234,
+    ukAvailable: true,
+    tradingCurrency: 'GBP',
+    isin: 'IE00BK5BQT80',
+    assetType: 'Pure Equity',
+    accumulationFund: true
+  },
+  'VDEM': {
+    name: 'Vanguard FTSE Emerging Markets UCITS ETF',
+    category: FUND_CATEGORIES.GLOBAL_EQUITY,
+    description: 'Provides exposure to large and mid-cap companies in emerging markets worldwide.',
+    expenseRatio: 0.0022,
+    historicalReturns: {
+      oneYear: 0.1534,
+      threeYear: 0.0645,
+      fiveYear: 0.0823,
+      tenYear: 0.0756,
+    },
+    minimumInvestment: 500,
+    riskLevel: 'Moderate-High',
+    dividendYield: 0.0312,
+    ukAvailable: true,
+    tradingCurrency: 'GBP',
+    isin: 'IE00BK5BR733',
+    assetType: 'Pure Equity',
+    distributionFrequency: 'Quarterly'
   },
   'VEVE': {
     name: 'Vanguard FTSE Developed World UCITS ETF',
@@ -108,7 +149,28 @@ export const INDEX_FUNDS = {
     ukAvailable: true,
     tradingCurrency: 'GBP',
     isin: 'IE00B3XXRP09',
-    assetType: 'Pure Equity'
+    assetType: 'Pure Equity',
+    distributionFrequency: 'Quarterly'
+  },
+  'VUAA': {
+    name: 'Vanguard S&P 500 UCITS ETF (Accumulating)',
+    category: FUND_CATEGORIES.REGIONAL_EQUITY,
+    description: 'Accumulating version of VUSA - Tracks the S&P 500 index of large-cap U.S. stocks, automatically reinvesting dividends.',
+    expenseRatio: 0.0007, // 0.07%
+    historicalReturns: {
+      oneYear: 0.2429,
+      threeYear: 0.0991,
+      fiveYear: 0.1197,
+      tenYear: 0.1223,
+    },
+    minimumInvestment: 500,
+    riskLevel: 'Moderate',
+    dividendYield: 0.0153,
+    ukAvailable: true,
+    tradingCurrency: 'GBP',
+    isin: 'IE00BFMXXD54',
+    assetType: 'Pure Equity',
+    accumulationFund: true
   },
   'VUAG': {
     name: 'Vanguard U.S. Equity Index Fund',
@@ -134,7 +196,7 @@ export const INDEX_FUNDS = {
     name: 'Vanguard FTSE Developed Europe UCITS ETF',
     category: FUND_CATEGORIES.REGIONAL_EQUITY,
     description: 'Tracks the performance of large and mid-sized companies in developed European markets. This distributing ETF pays out dividends to investors rather than reinvesting them.',
-    expenseRatio: 0.0012, // 0.12%
+    expenseRatio: 0.0012,
     historicalReturns: {
       oneYear: 0.1834,
       threeYear: 0.0856,
@@ -143,12 +205,32 @@ export const INDEX_FUNDS = {
     },
     minimumInvestment: 500,
     riskLevel: 'Moderate',
-    dividendYield: 0.0278, // 2.78%
+    dividendYield: 0.0278,
     ukAvailable: true,
     tradingCurrency: 'GBP',
     isin: 'IE00B945VV12',
     distributionFrequency: 'Quarterly',
     assetType: 'Pure Equity'
+  },
+  'VERX': {
+    name: 'Vanguard FTSE Developed Europe ex UK UCITS ETF',
+    category: FUND_CATEGORIES.REGIONAL_EQUITY,
+    description: 'Tracks the performance of large and mid-sized companies in developed European markets, excluding the UK.',
+    expenseRatio: 0.0010,
+    historicalReturns: {
+      oneYear: 0.1756,
+      threeYear: 0.0823,
+      fiveYear: 0.0912,
+      tenYear: 0.0945,
+    },
+    minimumInvestment: 500,
+    riskLevel: 'Moderate',
+    dividendYield: 0.0267,
+    ukAvailable: true,
+    tradingCurrency: 'GBP',
+    isin: 'IE00BK5BQY34',
+    assetType: 'Pure Equity',
+    distributionFrequency: 'Quarterly'
   },
   'VGER': {
     name: 'Vanguard Germany All Cap UCITS ETF',
@@ -499,7 +581,7 @@ export const INDEX_FUNDS = {
     name: 'Vanguard Global Aggregate Bond UCITS ETF',
     category: FUND_CATEGORIES.BONDS,
     description: 'Provides broad exposure to global investment-grade bonds',
-    expenseRatio: 0.0010, // 0.10%
+    expenseRatio: 0.0010,
     historicalReturns: {
       oneYear: 0.0523,
       threeYear: -0.0149,
@@ -572,6 +654,26 @@ export const INDEX_FUNDS = {
     tradingCurrency: 'GBP',
     isin: 'IE00B41CGH57',
     assetType: 'Money Market',
+    distributionFrequency: 'Monthly'
+  },
+  'VDCP': {
+    name: 'Vanguard USD Corporate Bond UCITS ETF',
+    category: FUND_CATEGORIES.BONDS,
+    description: 'Tracks a market-weighted index of US dollar-denominated investment-grade corporate bonds.',
+    expenseRatio: 0.0009,
+    historicalReturns: {
+      oneYear: 0.0434,
+      threeYear: 0.0212,
+      fiveYear: 0.0345,
+      tenYear: 0.0389,
+    },
+    minimumInvestment: 500,
+    riskLevel: 'Low',
+    dividendYield: 0.0445,
+    ukAvailable: true,
+    tradingCurrency: 'GBP',
+    isin: 'IE00BZ163K21',
+    assetType: 'Pure Bond',
     distributionFrequency: 'Monthly'
   },
 
